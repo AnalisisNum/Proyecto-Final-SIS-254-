@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto Final: Raíces de Ecuaciones</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #4caf50;
+            --primary-dark: #1b5e20;
+            --accent: #ff9800;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --hero-gradient-start: #e8f5e9;
+            --hero-gradient-end: #c8e6c9;
+            --section-1: #e3f2fd;
+            --section-2: #fff8e1;
+            --section-3: #f1f8e9;
+            --quiz-section: #ffecb3;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: var(--text);
+            line-height: 1.7;
+            font-size: 18px;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+        }
+        
+        h2 {
+            font-size: 2.2rem;
+        }
+        
+        h3 {
+            font-size: 1.8rem;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-size: 1.1rem;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--hero-gradient-start), var(--hero-gradient-end));
+            padding: 100px 0 70px;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 90% 10%, rgba(76, 175, 80, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 10% 90%, rgba(46, 125, 50, 0.1) 0%, transparent 20%);
+            z-index: 0;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.15;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm0 40h20v20H0V40zm0 40h20v20H0V80zM40 0h20v20H40V0zm0 40h20v20H40V40zm0 40h20v20H40V80zM80 0h20v20H80V0zm0 40h20v20H80V40zm0 40h20v20H80V80z' fill='%232e7d32' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        
+        .card {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 7px 20px rgba(0,0,0,0.12);
+            margin-bottom: 35px;
+            border: none;
+            transition: transform 0.3s ease;
+            font-size: 1.1rem;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 18px 25px;
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+        
+        .section-title {
+            position: relative;
+            padding-bottom: 20px;
+            margin-bottom: 35px;
+            color: var(--primary-dark);
+            font-weight: 800;
+            font-size: 2.5rem;
+            text-align: center;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 3px;
+        }
+        
+        .math-formula {
+            background-color: var(--light);
+            border-left: 5px solid var(--primary);
+            padding: 18px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.3em;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .derivation-step {
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-left: 3px solid var(--primary-light);
+            background-color: rgba(46, 125, 50, 0.08);
+            border-radius: 0 8px 8px 0;
+            font-size: 1.1rem;
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            border-radius: 50%;
+            margin-right: 12px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            line-height: 30px;
+        }
+        
+        .chart-container {
+            height: 350px;
+            margin: 25px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            padding: 12px 25px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-accent {
+            background: var(--accent);
+            border: none;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .btn-accent:hover {
+            background: #e65100;
+        }
+        
+        .results-table {
+            width: 100%;
+            font-size: 1.1rem;
+        }
+        
+        .results-table th {
+            background-color: var(--primary);
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 7px 20px rgba(0,0,0,0.12);
+            margin-bottom: 25px;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .form-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.3rem rgba(46, 125, 50, 0.25);
+        }
+        
+        .university-logos {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 30px 0;
+        }
+        
+        .university-logos img {
+            height: 100px;
+        }
+        
+        .step-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            font-weight: bold;
+            margin-right: 12px;
+            font-size: 1.1rem;
+        }
+        
+        .method-card {
+            background: linear-gradient(to bottom, white, #f0f7f0);
+            border-top: 4px solid var(--primary);
+        }
+        
+        footer {
+            background: linear-gradient(135deg, var(--primary-dark), var(--dark));
+            color: white;
+            padding: 40px 0 25px;
+            margin-top: 60px;
+            font-size: 1.1rem;
+        }
+        
+        .math-highlight {
+            background-color: rgba(255, 152, 0, 0.25);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .hero-title {
+            text-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            position: relative;
+            display: inline-block;
+            font-size: 3.5rem;
+        }
+        
+        .hero-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 3px;
+        }
+        
+        .hero-subtitle {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            font-size: 1.8rem;
+        }
+        
+        .hero-subtitle::before, .hero-subtitle::after {
+            content: "✻";
+            color: var(--primary);
+            margin: 0 20px;
+            font-size: 1.8rem;
+        }
+        
+        .math-icon {
+            font-size: 2rem;
+            vertical-align: middle;
+            margin: 0 8px;
+            color: var(--primary);
+        }
+        
+        .section-bg-1 {
+            background-color: var(--section-1);
+            padding: 60px 0;
+        }
+        
+        .section-bg-2 {
+            background-color: var(--section-2);
+            padding: 60px 0;
+        }
+        
+        .section-bg-3 {
+            background-color: var(--section-3);
+            padding: 60px 0;
+        }
+        
+        /* Sección de Quizzes */
+        .quiz-section {
+            background-color: var(--quiz-section);
+            padding: 70px 0;
+        }
+        
+        .quiz-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .quiz-header {
+            color: var(--primary-dark);
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+        
+        .quiz-question {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: var(--dark);
+        }
+        
+        .quiz-options {
+            margin-bottom: 30px;
+        }
+        
+        .quiz-option {
+            display: block;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.2rem;
+        }
+        
+        .quiz-option:hover {
+            background: #e8f5e9;
+            border-color: var(--primary-light);
+        }
+        
+        .quiz-option.selected {
+            background: #e8f5e9;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.3);
+        }
+        
+        .quiz-option.correct {
+            background: #e8f5e9;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.3);
+        }
+        
+        .quiz-option.incorrect {
+            background: #ffebee;
+            border-color: #f44336;
+        }
+        
+        .quiz-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .quiz-progress {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+        }
+        
+        .quiz-result {
+            text-align: center;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .quiz-result.show {
+            display: block;
+        }
+        
+        .quiz-result.correct {
+            background: #e8f5e9;
+            color: var(--primary-dark);
+        }
+        
+        .quiz-result.incorrect {
+            background: #ffebee;
+            color: #f44336;
+        }
+        
+        .lead {
+            font-size: 1.3rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-calculator me-2"></i>Raíces de Ecuaciones
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#introduccion">Introducción</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#caso1">Caso 1: Ingeniería</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#caso2">Caso 2: Economía</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#caso3">Caso 3: Física</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#metodos">Métodos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#quizzes">Evaluación</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#repositorio">Repositorio</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Encabezado hero -->
+    <section class="hero-section">
+        <div class="hero-pattern"></div>
+        <div class="container hero-content">
+            <div class="university-logos">
+                <img src="imi1.png" alt="UMSA Logo" style="height:100px">
+                <img src="imi2.png" alt="Facultad Logo">
+            </div>
+            
+            <h1 class="display-4 fw-bold text-dark mb-4 hero-title">PROYECTO FINAL</h1>
+            <h2 class="display-5 fw-bold text-primary mb-5">Raíces de Ecuaciones en Eventos Históricos</h2>
+            <p class="lead fs-4 text-dark mb-5 hero-subtitle">Análisis matemático de fenómenos históricos mediante métodos numéricos</p>
+            
+            <div class="d-flex justify-content-center gap-4 mt-5">
+                <div class="bg-white p-4 rounded shadow-lg text-center" style="width: 140px;">
+                    <i class="fas fa-square-root-alt math-icon"></i>
+                    <div class="fw-bold mt-3 fs-5">Bisección</div>
+                </div>
+                <div class="bg-white p-4 rounded shadow-lg text-center" style="width: 140px;">
+                    <i class="fas fa-infinity math-icon"></i>
+                    <div class="fw-bold mt-3 fs-5">Newton</div>
+                </div>
+                <div class="bg-white p-4 rounded shadow-lg text-center" style="width: 140px;">
+                    <i class="fas fa-wave-square math-icon"></i>
+                    <div class="fw-bold mt-3 fs-5">Secante</div>
+                </div>
+                <div class="bg-white p-4 rounded shadow-lg text-center" style="width: 140px;">
+                    <i class="fas fa-dot-circle math-icon"></i>
+                    <div class="fw-bold mt-3 fs-5">Punto Fijo</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Introducción -->
+    <section id="introduccion" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="section-title">Introducción</h2>
+                            <p class="lead">Las raíces de ecuaciones son soluciones a problemas matemáticos donde una función se iguala a cero. En ciencia e ingeniería, encontrar estas raíces es fundamental para resolver problemas complejos del mundo real.</p>
+                            
+                            <div class="row mt-5">
+                                <div class="col-md-6">
+                                    <div class="math-formula">
+                                        \( f(x) = 0 \quad \Rightarrow \quad x = r \quad | \quad f(r) = 0 \)
+                                    </div>
+                                    <p class="fs-5">Este proyecto explora tres eventos históricos donde el cálculo de raíces de ecuaciones fue fundamental para comprender fenómenos críticos.</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card method-card">
+                                        <div class="card-body">
+                                            <h4 class="fw-bold">Métodos Utilizados</h4>
+                                            <ul class="list-group list-group-flush fs-5">
+                                                <li class="list-group-item py-3"><i class="fas fa-divide me-3 text-primary fs-4"></i>Método de Bisección</li>
+                                                <li class="list-group-item py-3"><i class="fas fa-bolt me-3 text-success fs-4"></i>Método de Newton-Raphson</li>
+                                                <li class="list-group-item py-3"><i class="fas fa-project-diagram me-3 text-warning fs-4"></i>Método de la Secante</li>
+                                                <li class="list-group-item py-3"><i class="fas fa-sync-alt me-3 text-danger fs-4"></i>Método del Punto Fijo</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Caso 1: Puente Tacoma -->
+    <section id="caso1" class="section-bg-1">
+        <div class="container">
+            <h2 class="section-title">Caso 1: Resonancia en el Puente Tacoma Narrows (1940)</h2>
+            
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-bridge me-2"></i>Evento Histórico
+                        </div>
+                        <div class="card-body">
+                            <div class="video-container">
+                                <iframe src="https://www.youtube.com/embed/cF2fFvNz-lo" allowfullscreen></iframe>
+                            </div>
+                            
+                            <p class="fs-5">El 7 de noviembre de 1940, el puente Tacoma Narrows en Washington colapsó debido a fenómenos de resonancia causados por vientos de 67 km/h. Este evento es un ejemplo clásico de falla estructural por vibraciones inducidas por el viento.</p>
+                            
+                            <h4 class="fw-bold mt-4">Desarrollo Matemático</h4>
+                            <p class="fs-5">La ecuación diferencial que describe el movimiento del puente es:</p>
+                            <div class="math-formula">
+                                \( m\frac{d^2y}{dt^2} + c\frac{dy}{dt} + ky = F_0 \cos(\omega t) \)
+                            </div>
+                            
+                            <p class="fs-5">La amplitud de la solución estacionaria es:</p>
+                            <div class="math-formula">
+                                \( A = \frac{F_0}{\sqrt{(k - m\omega^2)^2 + (c\omega)^2}} \)
+                            </div>
+                            
+                            <p class="fs-5">Para encontrar la frecuencia de resonancia, maximizamos la amplitud A. Esto equivale a minimizar el denominador:</p>
+                            <div class="math-formula">
+                                \( D(\omega) = (k - m\omega^2)^2 + (c\omega)^2 \)
+                            </div>
+                            
+                            <p class="fs-5">Derivamos D respecto a ω e igualamos a cero:</p>
+                            <div class="derivation-step">
+                                <div class="step-number">1</div>
+                                \( \frac{dD}{d\omega} = 2(k - m\omega^2)(-2m\omega) + 2c^2\omega = 0 \)
+                            </div>
+                            
+                            <div class="derivation-step">
+                                <div class="step-number">2</div>
+                                \( -4m\omega (k - m\omega^2) + 2c^2\omega = 0 \)
+                            </div>
+                            
+                            <div class="derivation-step">
+                                <div class="step-number">3</div>
+                                \( \omega \left[ -4m(k - m\omega^2) + 2c^2 \right] = 0 \)
+                            </div>
+                            
+                            <div class="derivation-step">
+                                <div class="step-number">4</div>
+                                \( \omega = 0 \) (solución trivial) o \( -4mk + 4m^2\omega^2 + 2c^2 = 0 \)
+                            </div>
+                            
+                            <div class="derivation-step">
+                                <div class="step-number">5</div>
+                                \( 4m^2\omega^2 = 4mk - 2c^2 \)
+                            </div>
+                            
+                            <div class="derivation-step">
+                                <div class="step-number">6</div>
+                                \( \omega^2 = \frac{4mk - 2c^2}{4m^2} = \frac{2mk - c^2}{2m^2} \)
+                            </div>
+                            
+                            <p class="fs-5">Por lo tanto, la frecuencia angular de resonancia es:</p>
+                            <div class="math-formula math-highlight">
+                                \( \omega_r = \sqrt{ \frac{2mk - c^2}{2m^2} } = \sqrt{ \frac{k}{m} - \frac{c^2}{2m^2} } \)
+                            </div>
+                            
+                            <p class="fs-5">Para el puente Tacoma Narrows, con parámetros aproximados:</p>
+                            <ul class="fs-5">
+                                <li>Masa m = 2,000,000 kg</li>
+                                <li>Constante de resorte k = 5,000,000 N/m</li>
+                                <li>Coeficiente de amortiguamiento c = 100,000 N·s/m</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-chart-line me-2"></i>Análisis Gráfico
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="tacomaChart"></canvas>
+                            </div>
+                            
+                            <h4 class="mt-5 fw-bold">Simulación de Parámetros</h4>
+                            <div class="form-box">
+                                <form id="form-tacoma">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label fw-bold">Masa (kg)</label>
+                                            <input type="number" class="form-control form-control-lg" value="2000000" min="1000000" max="5000000">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label fw-bold">Constante (N/m)</label>
+                                            <input type="number" class="form-control form-control-lg" value="5000000" min="2000000" max="10000000">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label fw-bold">Amortiguamiento</label>
+                                            <input type="number" class="form-control form-control-lg" value="100000" min="50000" max="300000">
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-primary w-100 py-3 fs-5">Calcular Resonancia</button>
+                                </form>
+                            </div>
+                            
+                            <h4 class="fw-bold">Resultados de Métodos Numéricos</h4>
+                            <div class="table-responsive">
+                                <table class="table results-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Método</th>
+                                            <th>Frecuencia (rad/s)</th>
+                                            <th>Iteraciones</th>
+                                            <th>Error</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="fs-5"><i class="fas fa-divide me-2 text-primary fs-4"></i>Bisección</td>
+                                            <td class="fs-5">1.5811</td>
+                                            <td class="fs-5">14</td>
+                                            <td class="fs-5">0.0009</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fs-5"><i class="fas fa-bolt me-2 text-success fs-4"></i>Newton-Raphson</td>
+                                            <td class="fs-5">1.5811</td>
+                                            <td class="fs-5">5</td>
+                                            <td class="fs-5">0.0001</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fs-5"><i class="fas fa-project-diagram me-2 text-warning fs-4"></i>Secante</td>
+                                            <td class="fs-5">1.5811</td>
+                                            <td class="fs-5">7</td>
+                                            <td class="fs-5">0.0003</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fs-5"><i class="fas fa-sync-alt me-2 text-danger fs-4"></i>Punto Fijo</td>
+                                            <td class="fs-5">1.5811</td>
+                                            <td class="fs-5">12</td>
+                                            <td class="fs-5">0.0008</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Caso 2: Crisis Económica -->
+    <section id="caso2" class="section-bg-2">
+        <div class="container">
+            <h2 class="section-title">Caso 2: Crisis Financiera Global (2008)</h2>
+            
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-chart-line me-2"></i>Evento Histórico
+                        </div>
+                        <div class="card-body">
+                            <div class="video-container">
+                                <iframe src="https://www.youtube.com/embed/9yWam8pPE9c" allowfullscreen></iframe>
+                            </div>
+                            
+                            <p class="fs-5">La crisis financiera de 2008 fue la mayor perturbación económica desde la Gran Depresión. Comenzó con el colapso del mercado de hipotecas de alto riesgo en EE.UU. y se extendió globalmente, causando la quiebra de importantes instituciones financieras.</p>
+                            
+                            <h4 class="fw-bold mt-4">Desarrollo Matemático</h4>
+                            <p class="fs-5">Para una institución financiera, el punto de equilibrio se calcula cuando:</p>
+                            <div class="math-formula">
+                                \( \text{Ingresos} = \text{Costos Fijos} + \text{Costos Variables} \)
+                            </div>
+                            
+                            <p class="fs-5">Matemáticamente:</p>
+                            <div class="math-formula">
+                                \( p \cdot x = CF + CV \cdot x \)
+                            </div>
+                            
+                            <p class="fs-5">Donde:</p>
+                            <ul class="fs-5">
+                                <li>p: Precio por unidad</li>
+                                <li>x: Cantidad de unidades</li>
+                                <li>CF: Costos fijos</li>
+                                <li>CV: Costos variables por unidad</li>
+                            </ul>
+                            
+                            <p class="fs-5">Reorganizando para encontrar el punto de equilibrio:</p>
+                            <div class="math-formula">
+                                \( p \cdot x - CV \cdot x - CF = 0 \)
+                            </div>
+                            
+                            <p class="fs-5">Para un banco durante la crisis:</p>
+                            <div class="math-formula">
+                                \( 0.08x - 0.03x - 1,000,000 = 0 \)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-money-bill-wave me-2"></i>Análisis Económico
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="crisisChart"></canvas>
+                            </div>
+                            
+                            <h4 class="mt-5 fw-bold">Simulación Financiera</h4>
+                            <div class="form-box">
+                                <form id="form-crisis">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label fw-bold">Tasa de interés (%)</label>
+                                            <input type="number" class="form-control form-control-lg" value="8" min="1" max="20" step="0.5">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label fw-bold">Costos fijos ($)</label>
+                                            <input type="number" class="form-control form-control-lg" value="1000000" min="100000" max="5000000">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label fw-bold">Costos variables (%)</label>
+                                            <input type="number" class="form-control form-control-lg" value="3" min="1" max="10" step="0.5">
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-primary w-100 py-3 fs-5">Calcular Equilibrio</button>
+                                </form>
+                            </div>
+                            
+                            <h4 class="fw-bold">Resultados de Métodos Numéricos</h4>
+                            <div class="table-responsive">
+                                <table class="table results-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Método</th>
+                                            <th>Monto ($)</th>
+                                            <th>Iteraciones</th>
+                                            <th>Error</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="fs-5"><i class="fas fa-divide me-2 text-primary fs-4"></i>Bisección</td>
+                                            <td class="fs-5">20,000,000</td>
+                                            <td class="fs-5">18</td>
+                                            <td class="fs-5">0.001</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fs-5"><i class="fas fa-bolt me-2 text-success fs-4"></i>Newton-Raphson</td>
+                                            <td class="fs-5">20,000,000</td>
+                                            <td class="fs-5">6</td>
+                                            <td class="fs-5">0.0001</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fs-5"><i class="fas fa-project-diagram me-2 text-warning fs-4"></i>Secante</td>
+                                            <td class="fs-5">20,000,000</td>
+                                            <td class="fs-5">9</td>
+                                            <td class="fs-5">0.0005</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fs-5"><i class="fas fa-sync-alt me-2 text-danger fs-4"></i>Punto Fijo</td>
+                                            <td class="fs-5">20,000,000</td>
+                                            <td class="fs-5">14</td>
+                                            <td class="fs-5">0.0012</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Caso 3: Meteorito -->
+    <section id="caso3" class="section-bg-3">
+        <div class="container">
+            <h2 class="section-title">Caso 3: Meteorito de Chelyabinsk (2013)</h2>
+            
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-meteor me-2"></i>Evento Histórico
+                        </div>
+                        <div class="card-body">
+                            <div class="video-container">
+                                <iframe src="https://www.youtube.com/embed/nRLiLS2xvrM" allowfullscreen></iframe>
+                            </div>
+                            
+                            <p class="fs-5">El 15 de febrero de 2013, un meteorito de aproximadamente 20 metros de diámetro entró en la atmósfera sobre Chelyabinsk, Rusia, a una velocidad de 19 km/s. La explosión liberó una energía equivalente a 500 kilotones de TNT.</p>
+                            
+                            <h4 class="fw-bold mt-4">Desarrollo Matemático</h4>
+                            <p class="fs-5">La altura del meteorito en función del tiempo está dada por:</p>
+                            <div class="math-formula">
+                                \( h(t) = h_0 + v_0 \cdot t \cdot \sin(\theta) - \frac{1}{2} g t^2 \)
+                            </div>
+                            
+                            <p class="fs-5">Para encontrar el tiempo cuando el proyectil toca el suelo (h(t) = 0), resolvemos:</p>
+                            <div class="math-formula">
+                                \( h_0 + v_0 \cdot t \cdot \sin(\theta) - \frac{1}{2} g t^2 = 0 \)
+                            </div>
+                            
+                            <p class="fs-5">Esta es una ecuación cuadrática de la forma:</p>
+                            <div class="math-formula">
+                                \( -\frac{1}{2} g t^2 + (v_0 \sin(\theta)) t + h_0 = 0 \)
+                            </div>
+                            
+                            <p class="fs-5">Para el meteorito de Chelyabinsk:</p>
+                            <ul class="fs-5">
+                                <li>h₀ = 100,000 m (altura inicial)</li>
+                                <li>v₀ = 19,000 m/s (velocidad inicial)</li>
+                                <li>θ = 18° (ángulo de entrada)</li>
+                                <li>g = 9.8 m/s² (gravedad)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-chart-line me-2"></i>Trayectoria del Meteorito
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="meteoritoChart"></canvas>
+                            </div>
+                            
+                            <h4 class="mt-5 fw-bold">Simulación de Trayectoria</h4>
+                            <div class="form-box">
+                                <form id="form-meteorito">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label fw-bold">Altura (m)</label>
+                                            <input type="number" class="form-control form-control-lg" value="100000" min="50000" max="200000">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label fw-bold">Velocidad (m/s)</label>
+                                            <input type="number" class="form-control form-control-lg" value="19000" min="10000" max="30000">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label fw-bold">Ángulo (grados)</label>
+                                            <input type="number" class="form-control form-control-lg" value="18" min="10" max="80">
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-primary w-100 py-3 fs-5">Calcular Impacto</button>
+                                </form>
+                            </div>
+                            
+                            <h4 class="fw-bold">Resultados de Métodos Numéricos</h4>
+                            <div class="table-responsive">
+                                <table class="table results-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Método</th>
+                                            <th>Tiempo (s)</th>
+                                            <th>Iteraciones</th>
+                                            <th>Error</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="fs-5"><i class="fas fa-divide me-2 text-primary fs-4"></i>Bisección</td>
+                                            <td class="fs-5">1197.3</td>
+                                            <td class="fs-5">22</td>
+                                            <td class="fs-5">0.01</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fs-5"><i class="fas fa-bolt me-2 text-success fs-4"></i>Newton-Raphson</td>
+                                            <td class="fs-5">1197.3</td>
+                                            <td class="fs-5">7</td>
+                                            <td class="fs-5">0.0001</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fs-5"><i class="fas fa-project-diagram me-2 text-warning fs-4"></i>Secante</td>
+                                            <td class="fs-5">1197.3</td>
+                                            <td class="fs-5">11</td>
+                                            <td class="fs-5">0.005</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fs-5"><i class="fas fa-sync-alt me-2 text-danger fs-4"></i>Punto Fijo</td>
+                                            <td class="fs-5">1197.3</td>
+                                            <td class="fs-5">15</td>
+                                            <td class="fs-5">0.008</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Métodos Numéricos -->
+    <section id="metodos" class="py-5">
+        <div class="container">
+            <h2 class="section-title">Métodos Numéricos</h2>
+            
+            <div class="row">
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="card method-card h-100">
+                        <div class="card-header">Bisección</div>
+                        <div class="card-body">
+                            <h5 class="fw-bold">Fundamento Matemático</h5>
+                            <p class="fs-5">Se basa en el teorema del valor intermedio:</p>
+                            <div class="math-formula">
+                                \( \text{Si } f(a) \cdot f(b) < 0 \Rightarrow \exists c \in (a,b) \text{ tal que } f(c) = 0 \)
+                            </div>
+                            <p class="fs-5">Algoritmo:</p>
+                            <p class="fs-5"><span class="step-circle">1</span> Seleccionar intervalo [a, b]</p>
+                            <p class="fs-5"><span class="step-circle">2</span> Calcular punto medio c = (a+b)/2</p>
+                            <p class="fs-5"><span class="step-circle">3</span> Si f(c) = 0, c es la raíz</p>
+                            <p class="fs-5"><span class="step-circle">4</span> Si f(a)f(c) < 0, la raíz está en [a, c]</p>
+                            <p class="fs-5"><span class="step-circle">5</span> Repetir hasta convergencia</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="card method-card h-100">
+                        <div class="card-header">Newton-Raphson</div>
+                        <div class="card-body">
+                            <h5 class="fw-bold">Fundamento Matemático</h5>
+                            <p class="fs-5">Utiliza la derivada para aproximación:</p>
+                            <div class="math-formula">
+                                \( x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)} \)
+                            </div>
+                            <p class="fs-5">Algoritmo:</p>
+                            <p class="fs-5"><span class="step-circle">1</span> Elegir aproximación inicial x₀</p>
+                            <p class="fs-5"><span class="step-circle">2</span> Calcular x₁ = x₀ - f(x₀)/f'(x₀)</p>
+                            <p class="fs-5"><span class="step-circle">3</span> Repetir x_{n+1} = x_n - f(x_n)/f'(x_n)</p>
+                            <p class="fs-5"><span class="step-circle">4</span> Detenerse al alcanzar tolerancia</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="card method-card h-100">
+                        <div class="card-header">Secante</div>
+                        <div class="card-body">
+                            <h5 class="fw-bold">Fundamento Matemático</h5>
+                            <p class="fs-5">Aproxima la derivada con diferencia finita:</p>
+                            <div class="math-formula">
+                                \( x_{n+1} = x_n - f(x_n) \frac{x_n - x_{n-1}}{f(x_n) - f(x_{n-1})} \)
+                            </div>
+                            <p class="fs-5">Algoritmo:</p>
+                            <p class="fs-5"><span class="step-circle">1</span> Elegir dos aproximaciones iniciales x₀, x₁</p>
+                            <p class="fs-5"><span class="step-circle">2</span> Calcular x₂ = x₁ - f(x₁)(x₁ - x₀)/(f(x₁) - f(x₀))</p>
+                            <p class="fs-5"><span class="step-circle">3</span> Reemplazar x₀ = x₁, x₁ = x₂</p>
+                            <p class="fs-5"><span class="step-circle">4</span> Repetir hasta convergencia</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="card method-card h-100">
+                        <div class="card-header">Punto Fijo</div>
+                        <div class="card-body">
+                            <h5 class="fw-bold">Fundamento Matemático</h5>
+                            <p class="fs-5">Transforma la ecuación a x = g(x):</p>
+                            <div class="math-formula">
+                                \( x_{n+1} = g(x_n) \)
+                            </div>
+                            <p class="fs-5">Algoritmo:</p>
+                            <p class="fs-5"><span class="step-circle">1</span> Reescribir f(x) = 0 como x = g(x)</p>
+                            <p class="fs-5"><span class="step-circle">2</span> Elegir aproximación inicial x₀</p>
+                            <p class="fs-5"><span class="step-circle">3</span> Calcular x₁ = g(x₀)</p>
+                            <p class="fs-5"><span class="step-circle">4</span> Repetir x_{n+1} = g(x_n)</p>
+                            <p class="fs-5"><span class="step-circle">5</span> Detenerse al alcanzar tolerancia</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Quizzes -->
+    <section id="quizzes" class="quiz-section">
+        <div class="container">
+            <h2 class="section-title">Evaluación de Conceptos</h2>
+            
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="quiz-card">
+                        <div class="quiz-header">
+                            <i class="fas fa-question-circle me-2"></i>Prueba tus conocimientos
+                        </div>
+                        
+                        <div class="quiz-progress">
+                            Pregunta <span id="current-question">1</span> de <span id="total-questions">5</span>
+                        </div>
+                        
+                        <div class="quiz-question" id="question-text">
+                            ¿Qué método numérico se basa en el teorema del valor intermedio?
+                        </div>
+                        
+                        <div class="quiz-options" id="options-container">
+                            <div class="quiz-option" data-value="a">
+                                <span class="fw-bold me-2">A.</span> Método de Newton-Raphson
+                            </div>
+                            <div class="quiz-option" data-value="b">
+                                <span class="fw-bold me-2">B.</span> Método de Bisección
+                            </div>
+                            <div class="quiz-option" data-value="c">
+                                <span class="fw-bold me-2">C.</span> Método de la Secante
+                            </div>
+                            <div class="quiz-option" data-value="d">
+                                <span class="fw-bold me-2">D.</span> Método del Punto Fijo
+                            </div>
+                        </div>
+                        
+                        <div class="quiz-result" id="result-message">
+                            ¡Correcto! El método de bisección se basa en el teorema del valor intermedio.
+                        </div>
+                        
+                        <div class="quiz-navigation">
+                            <button id="prev-btn" class="btn btn-primary fs-5 px-4 py-2">
+                                <i class="fas fa-arrow-left me-2"></i>Anterior
+                            </button>
+                            <button id="next-btn" class="btn btn-primary fs-5 px-4 py-2">
+                                Siguiente<i class="fas fa-arrow-right ms-2"></i>
+                            </button>
+                            <button id="submit-btn" class="btn btn-accent fs-5 px-4 py-2">
+                                Verificar Respuesta
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Repositorio -->
+    <section id="repositorio" class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <i class="fas fa-code-branch me-2"></i>Repositorio del Proyecto
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center mb-4">
+                                <i class="fab fa-github fa-4x mb-3 text-dark"></i>
+                                <h3 class="fw-bold">Acceso al Código Fuente</h3>
+                                <p class="lead">Todo el material de este proyecto está disponible en GitHub</p>
+                            </div>
+                            
+                            <div class="d-grid gap-3">
+                                <a href="#" class="btn btn-primary btn-lg py-3 fs-4">
+                                    <i class="fab fa-github me-2"></i>Ver Repositorio
+                                </a>
+                                <a href="#" class="btn btn-accent btn-lg py-3 fs-4">
+                                    <i class="fas fa-external-link-alt me-2"></i>Visitar Página Web
+                                </a>
+                                <a href="#" class="btn btn-success btn-lg py-3 fs-4">
+                                    <i class="fas fa-download me-2"></i>Descargar Informe PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pie de página -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Universidad Mayor de San Andrés</h5>
+                    <p>INFORMATICA</p>
+                    <p>Métodos Numéricos - Raíces de Ecuaciones</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>&copy; 2025 - [ERICK PAYE ALVAREZ]</p>
+                    <p>Metodos Numericos  ...</p>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <p>Trabajo académico para fines educativos | Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Scripts para gráficas -->
+    <script>
+        // Gráfica para caso 1: Puente Tacoma
+        const tacomaCtx = document.getElementById('tacomaChart').getContext('2d');
+        const tacomaChart = new Chart(tacomaCtx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 21}, (_, i) => (i * 0.1).toFixed(1)),
+                datasets: [{
+                    label: 'Amplitud de Resonancia',
+                    data: [25, 18.5, 12.8, 7.8, 3.8, 0.5, 0, 0.3, 1.2, 2.9, 5.2, 8.2, 11.9, 16.2, 21.3, 27, 33.4, 40.5, 48.2, 56.7, 65.8],
+                    borderColor: '#2e7d32',
+                    backgroundColor: 'rgba(46, 125, 50, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Amplitud vs Frecuencia Angular',
+                        font: {
+                            size: 18
+                        }
+                    },
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 15
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Amplitud (m)',
+                            font: {
+                                size: 15
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 14
+                            }
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Frecuencia Angular (rad/s)',
+                            font: {
+                                size: 15
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfica para caso 2: Crisis Económica
+        const crisisCtx = document.getElementById('crisisChart').getContext('2d');
+        const crisisChart = new Chart(crisisCtx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 16}, (_, i) => i * 2 + 'M'),
+                datasets: [{
+                    label: 'Ingresos',
+                    data: [0, 1.6, 3.2, 4.8, 6.4, 8.0, 9.6, 11.2, 12.8, 14.4, 16.0, 17.6, 19.2, 20.8, 22.4, 24.0],
+                    borderColor: '#4caf50',
+                    backgroundColor: 'transparent',
+                    tension: 0.4,
+                    borderWidth: 3
+                },
+                {
+                    label: 'Costos',
+                    data: [1.0, 1.6, 2.2, 2.8, 3.4, 4.0, 4.6, 5.2, 5.8, 6.4, 7.0, 7.6, 8.2, 8.8, 9.4, 10.0],
+                    borderColor: '#ff9800',
+                    backgroundColor: 'transparent',
+                    tension: 0.4,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Punto de Equilibrio Financiero',
+                        font: {
+                            size: 18
+                        }
+                    },
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 15
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Millones de dólares',
+                            font: {
+                                size: 15
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 14
+                            }
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Unidades',
+                            font: {
+                                size: 15
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfica para caso 3: Meteorito
+        const meteoritoCtx = document.getElementById('meteoritoChart').getContext('2d');
+        const meteoritoChart = new Chart(meteoritoCtx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 21}, (_, i) => (i * 60).toFixed(0)),
+                datasets: [{
+                    label: 'Altura del Meteorito',
+                    data: [100, 96.8, 93.7, 90.5, 87.4, 84.2, 81.1, 77.9, 74.8, 71.6, 68.5, 65.3, 62.2, 59.0, 55.9, 52.7, 49.6, 46.4, 43.3, 40.1, 37.0],
+                    borderColor: '#ff9800',
+                    backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Trayectoria del Meteorito',
+                        font: {
+                            size: 18
+                        }
+                    },
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 15
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Altura (km)',
+                            font: {
+                                size: 15
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 14
+                            }
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Tiempo (s)',
+                            font: {
+                                size: 15
+                            }
+                        },
+                        ticks: {
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Funcionalidad para formularios
+        document.querySelectorAll('button').forEach(button => {
+            if (button.type === 'button') {
+                button.addEventListener('click', function() {
+                    const card = this.closest('.card');
+                    card.classList.add('animate__animated', 'animate__pulse');
+                    setTimeout(() => {
+                        card.classList.remove('animate__animated', 'animate__pulse');
+                    }, 1000);
+                    
+                    // Mostrar mensaje de simulación
+                    alert('Simulación completada con los valores actuales');
+                });
+            }
+        });
+        
+        // Funcionalidad para el quiz
+        const questions = [
+            {
+                question: "¿Qué método numérico se basa en el teorema del valor intermedio?",
+                options: [
+                    "Método de Newton-Raphson",
+                    "Método de Bisección",
+                    "Método de la Secante",
+                    "Método del Punto Fijo"
+                ],
+                correctAnswer: "b",
+                explanation: "¡Correcto! El método de bisección se basa en el teorema del valor intermedio, que establece que si una función continua cambia de signo en un intervalo, debe tener una raíz en ese intervalo."
+            },
+            {
+                question: "En el caso del puente Tacoma Narrows, ¿qué ecuación se derivó para encontrar la frecuencia de resonancia?",
+                options: [
+                    "\( \\frac{d^2y}{dt^2} + c\\frac{dy}{dt} + ky = 0 \)",
+                    "\( \\omega^2 = \\frac{k}{m} - \\frac{c^2}{2m^2} \)",
+                    "\( A = \\frac{F_0}{\\sqrt{(k - m\\omega^2)^2 + (c\\omega)^2}} \)",
+                    "\( m\\frac{d^2y}{dt^2} + c\\frac{dy}{dt} + ky = F_0 \\cos(\\omega t) \)"
+                ],
+                correctAnswer: "b",
+                explanation: "¡Correcto! La ecuación \( \\omega^2 = \\frac{k}{m} - \\frac{c^2}{2m^2} \) es la que se obtuvo al derivar y simplificar la expresión para encontrar la frecuencia de resonancia."
+            },
+            {
+                question: "En el contexto de la crisis financiera de 2008, ¿qué representa la ecuación 0.08x - 0.03x - 1,000,000 = 0?",
+                options: [
+                    "El balance de ingresos y costos de un banco",
+                    "El punto de equilibrio financiero",
+                    "La relación entre activos y pasivos",
+                    "La ecuación de utilidad neta"
+                ],
+                correctAnswer: "b",
+                explanation: "¡Correcto! Esta ecuación representa el punto de equilibrio financiero, donde los ingresos igualan a los costos totales."
+            },
+            {
+                question: "Para el meteorito de Chelyabinsk, ¿qué tipo de ecuación se resolvió para encontrar el tiempo de impacto?",
+                options: [
+                    "Ecuación diferencial",
+                    "Ecuación exponencial",
+                    "Ecuación logarítmica",
+                    "Ecuación cuadrática"
+                ],
+                correctAnswer: "d",
+                explanation: "¡Correcto! La ecuación obtenida fue cuadrática: \( -\\frac{1}{2} g t^2 + (v_0 \\sin(\\theta)) t + h_0 = 0 \)."
+            },
+            {
+                question: "¿Qué método numérico generalmente converge más rápido cuando se dispone de una buena aproximación inicial?",
+                options: [
+                    "Método de Bisección",
+                    "Método de Newton-Raphson",
+                    "Método de la Secante",
+                    "Método del Punto Fijo"
+                ],
+                correctAnswer: "b",
+                explanation: "¡Correcto! El método de Newton-Raphson tiene convergencia cuadrática, lo que significa que generalmente converge más rápido que los otros métodos cuando se tiene una buena aproximación inicial."
+            }
+        ];
+        
+        let currentQuestionIndex = 0;
+        let selectedOption = null;
+        
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const resultMessage = document.getElementById('result-message');
+        const currentQuestionSpan = document.getElementById('current-question');
+        const totalQuestionsSpan = document.getElementById('total-questions');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        
+        // Inicializar el quiz
+        totalQuestionsSpan.textContent = questions.length;
+        
+        function loadQuestion() {
+            const question = questions[currentQuestionIndex];
+            questionText.textContent = question.question;
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'quiz-option';
+                optionElement.dataset.value = String.fromCharCode(97 + index);
+                optionElement.innerHTML = `<span class="fw-bold me-2">${String.fromCharCode(65 + index)}.</span> ${option}`;
+                optionElement.addEventListener('click', () => selectOption(optionElement));
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            currentQuestionSpan.textContent = currentQuestionIndex + 1;
+            resultMessage.className = 'quiz-result';
+            selectedOption = null;
+            updateNavigation();
+        }
+        
+        function selectOption(optionElement) {
+            // Deseleccionar todas las opciones
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Seleccionar la opción clickeada
+            optionElement.classList.add('selected');
+            selectedOption = optionElement.dataset.value;
+        }
+        
+        function checkAnswer() {
+            if (!selectedOption) {
+                alert('Por favor selecciona una respuesta');
+                return;
+            }
+            
+            const question = questions[currentQuestionIndex];
+            const options = document.querySelectorAll('.quiz-option');
+            
+            // Mostrar resultado
+            if (selectedOption === question.correctAnswer) {
+                resultMessage.textContent = question.explanation;
+                resultMessage.className = 'quiz-result show correct';
+            } else {
+                resultMessage.textContent = `Incorrecto. ${question.explanation}`;
+                resultMessage.className = 'quiz-result show incorrect';
+                
+                // Resaltar respuesta correcta
+                options.forEach(opt => {
+                    if (opt.dataset.value === question.correctAnswer) {
+                        opt.classList.add('correct');
+                    }
+                    if (opt.dataset.value === selectedOption) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+            }
+        }
+        
+        function updateNavigation() {
+            prevBtn.disabled = currentQuestionIndex === 0;
+            nextBtn.disabled = currentQuestionIndex === questions.length - 1;
+            submitBtn.style.display = 'block';
+        }
+        
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            }
+        });
+        
+        submitBtn.addEventListener('click', checkAnswer);
+        
+        // Cargar primera pregunta
+        loadQuestion();
+    </script>
+</body>
+</html>
